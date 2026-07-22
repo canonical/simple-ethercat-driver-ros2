@@ -215,6 +215,79 @@ Then verify the interface connections and device:
 4. Ensure no shell variable sets a different `ROS_DOMAIN_ID`.
 5. Restart PlotJuggler after the demo is running.
 
+### (when using multiple ethernet devices) `ethercat slaves` shows nothing / master says `Waiting for device(s)`
+
+If `sudo ethercat slaves` returns no slave and `sudo ethercat master` shows
+`Phase: Waiting for device(s)...` with `Link: DOWN`, the master is running but
+is not attached to the network adapter wired to the EasyCAT. There are two
+common causes, and both are set in `/etc/ethercat.conf`.
+
+Check the master and its device first:
+
+```
+sudo ethercat master
+```
+
+Look at the `Ethernet devices` block. `Link: DOWN` and `(waiting...)` next to a
+MAC address mean the master is bound to the wrong adapter, or no Ethernet
+driver is attached.
+
+**Cause 1 — master bound to the wrong network adapter.**
+The master selects the adapter by **MAC address**, not by name. On a host with
+more than one adapter (for example a USB adapter used for Internet and a
+PCI/onboard port wired to the EasyCAT) it is easy to configure the wrong one.
+
+List the adapters and their MACs:
+
+```
+ip -br link
+```
+
+Identify the port physically cabled to the EasyCAT and note its MAC, for
+example `enp8s0` with MAC `10:ff:e0:90:64:25`. Confirm that port has carrier:
+
+```
+sudo ethtool enp8s0 | grep -i "link detected"
+```
+
+**Cause 2 — no Ethernet driver attached to the master.**
+If `DEVICE_MODULES` is empty in `/etc/ethercat.conf`, the master has no driver
+bound to the adapter, which also produces `Waiting for device(s)`. Use the
+`generic` driver, which works with any standard network adapter.
+
+**Fix — edit `/etc/ethercat.conf`.**
+Back up the file, then set both values (replace the MAC with the one from
+`ip -br link` for your EasyCAT port):
+
+```
+sudo cp /etc/ethercat.conf /etc/ethercat.conf.bak
+sudo sed -i 's/^MASTER0_DEVICE=.*/MASTER0_DEVICE="10:ff:e0:90:64:25"/' /etc/ethercat.conf
+sudo sed -i 's/^DEVICE_MODULES=.*/DEVICE_MODULES="generic"/' /etc/ethercat.conf
+```
+
+The relevant lines should now read:
+
+```
+MASTER0_DEVICE="10:ff:e0:90:64:25"
+DEVICE_MODULES="generic"
+```
+
+Restart the master and re-check:
+
+```
+sudo systemctl restart ethercat
+sudo ethercat master
+sudo ethercat slaves
+```
+
+When correct, `ethercat master` shows the EasyCAT port's MAC with
+`(attached)` and `Link: UP`, `0` lost frames, and `ethercat slaves` lists:
+
+```
+0  0:0  PREOP  +  Generic 32+32 bytes rev 1
+```
+
+
 ## Fast rehearsal checklist
 
 - [ ] Board powered and EtherCAT cable connected
