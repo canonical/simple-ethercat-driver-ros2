@@ -41,10 +41,11 @@ silently change when an upstream branch advances.
 ### 1. Created the Snapcraft project
 
 The `snap/snapcraft.yaml` recipe and project README were created under
-`ros2-ethercat-snap`.
+`simple-ethercat-driver-ros2`.
 
 The recipe currently defines a strict `core26` snap named
-`ethercat-ros2-bridge` and uses the experimental ROS 2 Lyrical extension.
+`simple-ethercat-driver-ros2` and uses the experimental ROS 2 Lyrical
+extension.
 
 ### 2. Packaged IgH userspace without kernel modules
 
@@ -201,8 +202,8 @@ Snapcraft while producing one coherent ROS overlay.
 
 ### 13. Built and inspected the installable artifact
 
-Snapcraft produced `ethercat-ros2-bridge_0.1_amd64.snap` on July 20, 2026. The
-artifact is 192,126,976 bytes (183 MiB) and contains:
+Before the package rename, Snapcraft produced a 192,126,976-byte (183 MiB)
+amd64 artifact on July 20, 2026. It contains:
 
 - IgH 1.6.9 userspace CLI, headers, and `libethercat.so.1`
 - all pinned ICube driver libraries and plugin metadata
@@ -225,7 +226,7 @@ were connected. Validation confirmed:
 - ROS discovers `easycat_bridge`, `ethercat_driver`, and
   `joint_state_broadcaster` inside the snap
 - the packaged EasyCAT bridge launch description parses successfully
-- `snap run ethercat-ros2-bridge.demo` starts and displays the expected terminal
+- the packaged demo application starts and displays the expected terminal
   dashboard
 - UDP-only Fast DDS removes the shared-memory confinement errors
 - a synthetic EasyCAT dynamic-state message with A0=42 and A1=211 produces
@@ -252,7 +253,6 @@ separate testing repository and was already committed before this snap work.
 
 The tested artifact was:
 
-- file: `ethercat-ros2-bridge_0.1_amd64.snap`
 - size: 192,126,976 bytes (approximately 192 MB / 183 MiB)
 - SHA-256: `22e4a06788f9813c1ebebaf79757d0e8c790a69c1b52dd9f0105bae731b9a8e0`
 
@@ -262,7 +262,7 @@ testing. The physical test confirmed:
 - the bundled CLI discovered `Generic 32+32 bytes rev 1`
 - the slave entered OP while the packaged bridge was active
 - the 64-byte EtherCAT domain reported WorkingCounter 3/3
-- `snap run ethercat-ros2-bridge.demo` reached `LIVE`
+- the packaged demo application reached `LIVE`
 - both physical dials independently changed the dashboard's A0 and A1 values
 - `/joint_states` published `easycat_analog_0` and `easycat_analog_1` with the
   live physical values

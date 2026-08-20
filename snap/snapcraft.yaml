@@ -1,4 +1,4 @@
-name: ethercat-ros2-bridge
+name: simple-ethercat-driver-ros2
 base: core26
 version: '0.1'
 summary: ROS 2 Lyrical bridge for an IgH EtherCAT host master

@@ -4,15 +4,14 @@
 
 The complete installation and presentation procedure is available in:
 
-- [DEMO-STEPS.md](DEMO-STEPS.md)
+- [demo-steps.md](demo-steps.md)
 
 ## What we achieved
 
 We produced an installable Ubuntu 26.04 snap that packages the EtherCAT userspace and ROS 2 bridge needed for the physical EtherCAT demo. The snap uses the IgH kernel modules provided by the host and accesses the host-created `/dev/EtherCAT*` device rather than attempting to ship kernel modules itself.
 
-The final artifact is:
+The pre-migration validation artifact was:
 
-- `ethercat-ros2-bridge_0.1_amd64.snap`
 - 192,126,976 bytes (183 MiB)
 - SHA-256 `22e4a06788f9813c1ebebaf79757d0e8c790a69c1b52dd9f0105bae731b9a8e0`
 - strict confinement
@@ -94,13 +93,13 @@ this summary used the hardware-validated rev-1 PDO-only profile.
 
 After installing and connecting the snap interfaces, the complete demo starts with one command:
 
-    snap run ethercat-ros2-bridge.demo
+    snap run simple-ethercat-driver-ros2.demo
 
 This command starts the EtherCAT bridge in the background and shows a clean terminal dashboard containing live A0 and A1 values and bar graphs. At the same time, the values are published on `/joint_states`.
 
 ROS launch output is kept out of the presentation terminal and written to:
 
-    ~/snap/ethercat-ros2-bridge/current/easycat-demo.log
+    ~/snap/simple-ethercat-driver-ros2/current/easycat-demo.log
 
 This supports both versions of the planned demonstration:
 
