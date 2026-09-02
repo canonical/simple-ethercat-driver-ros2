@@ -24,7 +24,6 @@ EasyCAT board
 
 - [Step-by-step demo runbook](demo-steps.md)
 - [Reproducibility guide](reproducibility-guide.md)
-- [Project summary](summary.md)
 
 ## Project status
 
@@ -261,8 +260,7 @@ packaged.
 │           ├── easycat_bridge/  # dashboard and topic adapter
 │           └── launch/          # ROS 2 Control launch
 ├── demo-steps.md                # complete presentation runbook
-├── reproducibility-guide.md     # reproducible build and validation guide
-└── summary.md                   # concise project summary
+└── reproducibility-guide.md     # reproducible build and validation guide
 ```
 
 ## Validation evidence
