@@ -1,0 +1,60 @@
+diff --git a/ethercat_driver/CMakeLists.txt b/ethercat_driver/CMakeLists.txt
+index 4590670..44acda4 100644
+--- a/ethercat_driver/CMakeLists.txt
++++ b/ethercat_driver/CMakeLists.txt
+@@ -7,6 +7,7 @@ endif()
+ 
+ # find dependencies
+ find_package(ament_cmake REQUIRED)
++find_package(ament_cmake_target_dependencies REQUIRED)
+ find_package(ament_cmake_ros REQUIRED)
+ 
+ find_package(hardware_interface REQUIRED)
+# EtherLab
+diff --git a/ethercat_generic_plugins/ethercat_generic_cia402_drive/CMakeLists.txt b/ethercat_generic_plugins/ethercat_generic_cia402_drive/CMakeLists.txt
+index ce2f3ed..229be1e 100644
+--- a/ethercat_generic_plugins/ethercat_generic_cia402_drive/CMakeLists.txt
++++ b/ethercat_generic_plugins/ethercat_generic_cia402_drive/CMakeLists.txt
+@@ -13,6 +13,7 @@ endif()
+ 
+ # find dependencies
+ find_package(ament_cmake REQUIRED)
++find_package(ament_cmake_target_dependencies REQUIRED)
+ find_package(ament_cmake_ros REQUIRED)
+ find_package(ethercat_interface REQUIRED)
+ find_package(ethercat_generic_slave REQUIRED)
+diff --git a/ethercat_generic_plugins/ethercat_generic_slave/CMakeLists.txt b/ethercat_generic_plugins/ethercat_generic_slave/CMakeLists.txt
+index 948a5cc..651ef28 100644
+--- a/ethercat_generic_plugins/ethercat_generic_slave/CMakeLists.txt
++++ b/ethercat_generic_plugins/ethercat_generic_slave/CMakeLists.txt
+@@ -13,6 +13,7 @@ endif()
+ 
+ # find dependencies
+ find_package(ament_cmake REQUIRED)
++find_package(ament_cmake_target_dependencies REQUIRED)
+ find_package(ament_cmake_ros REQUIRED)
+ find_package(ethercat_interface REQUIRED)
+ find_package(pluginlib REQUIRED)
+diff --git a/ethercat_interface/CMakeLists.txt b/ethercat_interface/CMakeLists.txt
+index 8ca26fd..133bcd9 100644
+--- a/ethercat_interface/CMakeLists.txt
++++ b/ethercat_interface/CMakeLists.txt
+@@ -14,6 +14,7 @@ endif()
+ 
+ # find dependencies
+ find_package(ament_cmake REQUIRED)
++find_package(ament_cmake_target_dependencies REQUIRED)
+ find_package(ament_cmake_ros REQUIRED)
+ find_package(rclcpp REQUIRED)
+ 
+diff --git a/ethercat_manager/CMakeLists.txt b/ethercat_manager/CMakeLists.txt
+index c917892..73a456c 100644
+--- a/ethercat_manager/CMakeLists.txt
++++ b/ethercat_manager/CMakeLists.txt
+@@ -8,4 +8,5 @@ endif()
+ 
+ find_package(ament_cmake REQUIRED)
++find_package(ament_cmake_target_dependencies REQUIRED)
+ find_package(rclcpp REQUIRED)
+ find_package(ethercat_msgs REQUIRED)
+ 

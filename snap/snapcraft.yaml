@@ -1,0 +1,141 @@
+name: simple-ethercat-driver-ros2
+base: core26
+version: '0.1'
+summary: ROS 2 Lyrical bridge for an IgH EtherCAT host master
+description: |
+  Bundles the ICube ROS 2 EtherCAT driver and IgH userspace library for Ubuntu
+  26.04. The host supplies the version-compatible ec_master kernel module and
+  /dev/EtherCAT devices; this snap does not build or install kernel modules.
+license: Apache-2.0 AND GPL-2.0+
+grade: devel
+confinement: strict
+
+plugs:
+  ethercat-master:
+    interface: custom-device
+    custom-device: ethercat-master
+
+slots:
+  ethercat-master-slot:
+    interface: custom-device
+    custom-device: ethercat-master
+    devices:
+      - /dev/EtherCAT[0-9]*
+    udev-tagging:
+      - kernel: EtherCAT[0-9]*
+        subsystem: EtherCAT
+
+apps:
+  ethercat:
+    command: usr/local/etherlab/bin/ethercat
+    plugs:
+      - ethercat-master
+  ros2:
+    command: ros2
+    extensions:
+      - ros2-lyrical-ros-base
+    environment:
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
+      LD_LIBRARY_PATH: $SNAP/usr/local/etherlab/lib:${LD_LIBRARY_PATH}
+    plugs:
+      - ethercat-master
+      - network
+      - network-bind
+  sdo-server:
+    command: opt/ros/snap/lib/ethercat_manager/ethercat_sdo_srv_server
+    extensions:
+      - ros2-lyrical-ros-base
+    environment:
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
+      LD_LIBRARY_PATH: $SNAP/usr/local/etherlab/lib:${LD_LIBRARY_PATH}
+    plugs:
+      - ethercat-master
+      - network
+      - network-bind
+  bridge:
+    command: ros2 launch easycat_bridge easycat.launch.py
+    extensions:
+      - ros2-lyrical-ros-base
+    environment:
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
+      LD_LIBRARY_PATH: $SNAP/usr/local/etherlab/lib:${LD_LIBRARY_PATH}
+    plugs:
+      - ethercat-master
+      - network
+      - network-bind
+  demo:
+    command: opt/ros/snap/lib/easycat_bridge/easycat_console_monitor --launch-bridge
+    extensions:
+      - ros2-lyrical-ros-base
+    environment:
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
+      LD_LIBRARY_PATH: $SNAP/usr/local/etherlab/lib:${LD_LIBRARY_PATH}
+      PYTHONUNBUFFERED: '1'
+    plugs:
+      - ethercat-master
+      - network
+      - network-bind
+
+parts:
+  ethercat-userspace:
+    plugin: autotools
+    source: https://gitlab.com/etherlab.org/ethercat.git
+    source-type: git
+    source-commit: beb2bf07df4a19024490c0517137cffa8f97ace0
+    override-build: |
+      ./bootstrap
+      craftctl default
+    autotools-configure-parameters:
+      - --prefix=/usr/local/etherlab
+      - --disable-kernel
+      - --disable-eoe
+      - --disable-initd
+    build-packages:
+      - autoconf
+      - automake
+      - build-essential
+      - libtool
+      - pkg-config
+
+  ethercat-driver:
+    after:
+      - ethercat-userspace
+    plugin: colcon
+    source: https://github.com/ICube-Robotics/ethercat_driver_ros2.git
+    source-type: git
+    source-commit: 7a32bd7b8fc066c6668b1df7446c89aff570bb7d
+    override-pull: |
+      craftctl default
+      patch -p1 < "${CRAFT_PROJECT_DIR}/snap/local/lyrical-ament-target-dependencies.patch"
+    build-packages:
+      - ros-lyrical-ament-cmake-target-dependencies
+      - ros-lyrical-ros2-control
+    stage-packages:
+      - ros-lyrical-controller-manager
+      - ros-lyrical-joint-state-broadcaster
+      - ros-lyrical-robot-state-publisher
+      - ros-lyrical-ros2-control
+      - ros-lyrical-xacro
+    colcon-cmake-args:
+      - -DETHERCAT_INCLUDE_DIR=${CRAFT_STAGE}/usr/local/etherlab/include
+      - -DETHERCAT_LIB=${CRAFT_STAGE}/usr/local/etherlab/lib/libethercat.so
+      - -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=${CRAFT_PROJECT_DIR}/snap/local/ament_target_dependencies.cmake
+      - -DBUILD_TESTING=OFF
+
+  easycat-bridge:
+    after:
+      - ethercat-driver
+    plugin: colcon
+    source: snap/local/easycat_bridge
+    override-pull: |
+      craftctl default
+      find . -type f -name '*.pyc' -delete
+      find . -depth -type d -name '__pycache__' -empty -delete
+    stage:
+      # The ICube colcon part already supplies the merged-prefix root setup.
+      # Package-specific files and hooks from this part remain staged.
+      - -opt/ros/snap/local_setup.sh
+      - -opt/ros/snap/setup.bash
+      - -opt/ros/snap/setup.ps1
+      - -opt/ros/snap/setup.sh
+      - -opt/ros/snap/setup.zsh

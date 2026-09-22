@@ -1,0 +1,84 @@
+# AB&T EasyCAT standard 32-byte input / 32-byte output process image.
+# The slave has no mailbox. Its process-data SyncManagers are SM0 and SM1.
+vendor_id: 0x0000079a
+product_id: 0x00defede
+assign_activate: 0x0000
+
+rpdo:
+  - index: 0x1600
+    channels:
+      # Every PDO entry is declared to preserve the slave's complete 32-byte layout.
+      # Unexposed outputs are held at zero.
+      - {index: 0x0005, sub_index: 1, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 2, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 3, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 4, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 5, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 6, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 7, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 8, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 9, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 10, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 11, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 12, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 13, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 14, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 15, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 16, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 17, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 18, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 19, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 20, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 21, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 22, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 23, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 24, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 25, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 26, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 27, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 28, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 29, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 30, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 31, type: uint8, default: 0}
+      - {index: 0x0005, sub_index: 32, type: uint8, default: 0}
+
+tpdo:
+  - index: 0x1a00
+    channels:
+      # A0 and A1 are 8-bit values produced by the Arduino sketch.
+      - {index: 0x0006, sub_index: 1, type: uint8, state_interface: analog_input_0}
+      - {index: 0x0006, sub_index: 2, type: uint8, state_interface: analog_input_1}
+      - {index: 0x0006, sub_index: 3, type: uint8}
+      - {index: 0x0006, sub_index: 4, type: uint8}
+      - {index: 0x0006, sub_index: 5, type: uint8}
+      - {index: 0x0006, sub_index: 6, type: uint8}
+      - {index: 0x0006, sub_index: 7, type: uint8}
+      - {index: 0x0006, sub_index: 8, type: uint8}
+      - {index: 0x0006, sub_index: 9, type: uint8}
+      - {index: 0x0006, sub_index: 10, type: uint8}
+      - {index: 0x0006, sub_index: 11, type: uint8}
+      - {index: 0x0006, sub_index: 12, type: uint8}
+      - {index: 0x0006, sub_index: 13, type: uint8}
+      - {index: 0x0006, sub_index: 14, type: uint8}
+      - {index: 0x0006, sub_index: 15, type: uint8}
+      - {index: 0x0006, sub_index: 16, type: uint8}
+      - {index: 0x0006, sub_index: 17, type: uint8}
+      - {index: 0x0006, sub_index: 18, type: uint8}
+      - {index: 0x0006, sub_index: 19, type: uint8}
+      - {index: 0x0006, sub_index: 20, type: uint8}
+      - {index: 0x0006, sub_index: 21, type: uint8}
+      - {index: 0x0006, sub_index: 22, type: uint8}
+      - {index: 0x0006, sub_index: 23, type: uint8}
+      - {index: 0x0006, sub_index: 24, type: uint8}
+      - {index: 0x0006, sub_index: 25, type: uint8}
+      - {index: 0x0006, sub_index: 26, type: uint8}
+      - {index: 0x0006, sub_index: 27, type: uint8}
+      - {index: 0x0006, sub_index: 28, type: uint8}
+      - {index: 0x0006, sub_index: 29, type: uint8}
+      - {index: 0x0006, sub_index: 30, type: uint8}
+      - {index: 0x0006, sub_index: 31, type: uint8}
+      - {index: 0x0006, sub_index: 32, type: uint8}
+
+sm:
+  - {index: 0, type: output, pdo: rpdo, watchdog: enable}
+  - {index: 1, type: input, pdo: tpdo, watchdog: disable}

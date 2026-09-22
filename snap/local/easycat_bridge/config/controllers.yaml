@@ -1,0 +1,20 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    easycat_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+easycat_state_broadcaster:
+  ros__parameters:
+    joints:
+      - easycat
+    interfaces:
+      - analog_input_0
+      - analog_input_1
+    publish_dynamic_joint_states: true
+    # Keep the broadcaster's standard output local because its custom GPIO
+    # interfaces do not map one-to-one onto two JointState entries. The adapter
+    # consumes its dynamic output and publishes the public /joint_states topic.
+    use_local_topics: true
+    use_urdf_to_filter: false
